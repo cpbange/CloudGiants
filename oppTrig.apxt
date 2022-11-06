@@ -1,0 +1,17 @@
+trigger oppTrig on Opportunity (before insert, after insert) {
+	 Pricebook2 standardBook = [SELECT Id FROM Pricebook2 WHERE IsStandard = true];
+    if(Trigger.isBefore) {
+        for(Opportunity record: Trigger.new) {
+            record.Pricebook2Id = standardBook.Id;
+        }
+    }
+    if(Trigger.isAfter) {
+        OpportunityLineItem[] lines = new OpportunityLineItem[0];
+        PricebookEntry entry = [SELECT Id FROM PricebookEntry WHERE Pricebook2Id = :standardBook.Id LIMIT 1];
+        //PricebookEntry entry = new PricebookEntry();
+        for(Opportunity record: Trigger.new) {
+            lines.add(new OpportunityLineItem(PricebookEntryId=entry.Id, OpportunityId=record.Id, UnitPrice=1000.00, Quantity=1));
+        }
+        insert lines;
+    }
+}

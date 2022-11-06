@@ -1,0 +1,36 @@
+public class AccountTrigger_Handler {
+    public static void processOpp(List<Account> accList){
+		system.debug('accList---'+ accList);
+
+		Set<Id> accIdSet = new Set<Id>();
+		List <Opportunity> oppList = new List<Opportunity>();
+        
+        try {
+            for(Account ac: accList){
+                accidSet.add(ac.Id);
+              
+                system.debug('accIdSet------'+ accIdSet);
+
+				if(accIdSet.size() > 0) {
+                    for(Id i : accIdSet) {
+                        Opportunity op = new Opportunity();
+                        op.Name = 'Initial Opp';
+                        op.StageName = 'Prospecting';
+                        op.CloseDate = system.today() + 30;
+                        op.AccountId = i;
+                        oppList.add(op);
+					}
+
+					system.debug('oppList-----'+ oppList);
+
+					if(oppList.size() > 0) {
+						insert oppList;
+					}
+				}
+        	}
+		} catch (Exception ex) {
+			system.debug('Exception---ofLine--->'+ ex.getLineNumber());
+			system.debug('Exception---Message--->'+ ex.getMessage());
+		}
+	}
+}

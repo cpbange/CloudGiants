@@ -1,0 +1,5 @@
+trigger AccountTrigger on Account (after insert) {
+    if(trigger.IsInsert && trigger.IsAfter){
+        AccountTrigger_Handler.processOpp(trigger.new);
+    }
+}
